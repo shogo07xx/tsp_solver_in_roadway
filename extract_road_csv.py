@@ -3,7 +3,7 @@ import numpy as np
 import constant as c
 
 def extract_node_datas(node_csv_file: str) -> list[dict]:
-    """
+    """  頂点の情報を持つ csv ファイルから必要な情報のみを抽出して整形  \n
     Args:
         node_csv_file (str): 頂点に関する情報を持つ csv ファイルの path
     Returns:
@@ -17,7 +17,7 @@ def extract_node_datas(node_csv_file: str) -> list[dict]:
     return data
 
 def extract_edge_datas(edge_csv_file: str) -> list[dict]:
-    """ 辺の情報を持つ csv ファイルから必要な情報のみを抽出して整形
+    """ 辺の情報を持つ csv ファイルから必要な情報のみを抽出して整形  \n
     Args:
         edge_csv_file (str): 辺に関する情報を持つ csv ファイルの path
     Returns:

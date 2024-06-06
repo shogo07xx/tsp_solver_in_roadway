@@ -4,7 +4,7 @@ from geopy.distance import geodesic
 import constant as c
 
 def extract_nodes_edges():
-    """ osm から 2 つの地点 u, v の中心点を中心とする半径を持つ円内の道路ネットワークを取得し csv 形式で出力
+    """ osm から 2 つの地点 u, v の中心点を中心とする半径を持つ円内の道路ネットワークを取得し csv 形式で出力  \n
     Local_Variables:
         u (tuple): ある地点の緯度経度
         v (tuple): ある地点の緯度経度

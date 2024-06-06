@@ -6,7 +6,7 @@ from typing import Dict
 
 class Network:
     def __init__(self) -> None:
-        """ ネットワークの初期化を行うコンストラクタ
+        """ ネットワークの初期化を行うコンストラクタ  \n
         Args:
             # n (int): 頂点数
             nodes (Dict[int, Dict[str, int]]): 各頂点の情報を格納
@@ -23,7 +23,7 @@ class Network:
         self.edges: Dict[int, Dict[int, Dict[str, float]]] = {}
 
     def add_node(self, osmid: int, x: float, y: float):
-        """ 頂点を追加
+        """ 頂点を追加  \n
         Args:
             osmid (int): 頂点の osmid
             x (float): 頂点の x 座標
@@ -32,7 +32,7 @@ class Network:
         self.nodes[osmid] = {'x': x, 'y': y}
 
     def add_edge(self, u_osmid: int, v_osmid: int, e_osmid: int, cost: float, oneway=False, reverse=False) -> None:
-        """ 辺を追加
+        """ 辺を追加  \n
         Args:
             u_osmid (int): 頂点 u の osmid
             v_osmid (int): 頂点 v の osmid
@@ -54,7 +54,7 @@ class Network:
             self.edges[v_osmid][u_osmid]['cost'] = cost
         
     def draw(self, is_directed = False, path = None) -> None:
-        """ ネットワークを描画
+        """ ネットワークを描画  \n
         Args:
             is_directed (bool, optional): 有向グラフならば真
             path (_type_, optional): 頂点番号のリストで表現した強調したい経路
@@ -84,7 +84,7 @@ class Network:
 
 class MakeNetwork:
     def __init__(self, network: Network, node_csv_file: str, edge_csv_file: str) -> None:
-        """ ネットワークを作成するためのコンストラクタ
+        """ ネットワークを作成するためのコンストラクタ  \n
         Args:
             edge_csv_file (str): 辺に関する情報を持つ csv ファイルの path
             node_csv_file (str): 頂点に関する情報を持つ csv ファイルの path
@@ -110,7 +110,7 @@ class Dijkstra(Network):
         self.prev = {}
 
     def dijkstra(self, start: int) -> list[float]:
-        """ ダイクストラ法を用いて最短経路とその時のコストを求める
+        """ ダイクストラ法を用いて最短経路とその時のコストを求める \n
         Args:
             start (int): 最短経路の開始点の頂点番号
         Return:
@@ -132,7 +132,7 @@ class Dijkstra(Network):
         return self.cost[start]
 
     def get_shortest_path(self, start: int, goal: int) -> list[int]:
-        """ 最短経路を求める
+        """ 最短経路を求める  \n
         Args:
             start (int): 最短経路の開始点の頂点番号
             goal (int): 最短経路の終点の頂点番号

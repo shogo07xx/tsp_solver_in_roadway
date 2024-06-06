@@ -3,7 +3,7 @@ import my_network as nt
 import constant as c
 
 def get_node_osmids(u: tuple) -> int:
-    """ u の座標に最も近い Node の osmid を返す
+    """ u の座標に最も近い Node の osmid を返す  \n
     Args:
         u (tuple): 頂点 u の経度と緯度を格納したタプル
     Returns:
