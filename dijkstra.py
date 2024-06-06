@@ -25,6 +25,6 @@ def main():
     shortest_path = Network.get_shortest_path(start_osmid, goal_osmid)
     Network.draw(is_directed=True, path=shortest_path)
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     main()
     print(c.FontColor.YELLOW + 'Program ran successfully' + c.FontColor.END)
