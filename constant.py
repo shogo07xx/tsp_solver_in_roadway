@@ -1,3 +1,6 @@
+class Transportation:
+    car = '車'
+
 class Spot:
     kgu = (34.91, 135.16)
     kgu_name = '関西学院大学三田キャンパス'

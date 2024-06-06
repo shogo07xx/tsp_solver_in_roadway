@@ -67,7 +67,7 @@ class Network:
         # edge_labels = {}
         for u_osmid, edge in self.edges.items():
             for v_osmid, edge_info in edge.items():
-                if edge_info['cost'] == float("inf"):
+                if edge_info['cost'] == float('inf'):
                     continue
                 G.add_edge(u_osmid, v_osmid, weight=edge_info['cost'])
                 # edge_labels[(u_osmid, v_osmid)] = round(edge_info['cost'],1)

@@ -39,7 +39,7 @@ def main():
     start_osmid = get_node_osmids(c.Spot.kgu)
     goal_osmid = get_node_osmids(c.Spot.uddhichuo) 
     min_costs = Network.dijkstra(start_osmid)
-    print(f'車で{c.Spot.kgu_name}から{c.Spot.uddhichuo_name}まで移動するのにかかる時間: {round(min_costs[goal_osmid], 3)} min')
+    print(f'({c.Transportation.car}) {c.Spot.kgu_name} -> {c.Spot.uddhichuo_name}: {round(min_costs[goal_osmid], 3)} min')
     shortest_path = Network.get_shortest_path(start_osmid, goal_osmid)
     Network.draw(is_directed=True, path=shortest_path)
 
