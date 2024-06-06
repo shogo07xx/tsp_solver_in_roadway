@@ -1,10 +1,7 @@
 import osmnx as ox
 import pandas as pd
 from geopy.distance import geodesic
-
-class Spot:
-    kgu = (34.91, 135.16)
-    uddhichuo = (34.91, 135.18)
+import constant as c
 
 def extract_nodes_edges():
     """ osm から 2 つの地点 u, v の中心点を中心とする半径を持つ円内の道路ネットワークを取得し csv 形式で出力
@@ -36,15 +33,15 @@ def extract_nodes_edges():
     """
 
     # (u, v) を指定
-    u = Spot.kgu
-    v = Spot.uddhichuo
+    u = c.Spot.kgu
+    v = c.Spot.uddhichuo
 
     # 始点や終点の座標に最も近い頂点を取得した道路ネットワークに含まれるようにするための余分な距離
-    extra_dist = 1000 
+    margin_dist = c.MarginDist.get_road_network_radius
 
     # 道路ネットワークデータを取得
     center_point = ((u[0] + v[0]) / 2, (u[1] + v[1]) / 2)
-    radius = (geodesic(u, v).meters + extra_dist) / 2
+    radius = (geodesic(u, v).meters + margin_dist) / 2
     G = ox.graph_from_point(center_point, dist=radius, network_type='drive')
 
     # グラフデータから DataFrame 形式に変更
@@ -53,11 +50,12 @@ def extract_nodes_edges():
     edges = pd.DataFrame(edges)
 
     # csv形式で出力
-    nodes.to_csv(f'out/driveway_node_kgu_uddhichuo.csv')
-    edges.to_csv(f'out/driveway_edge_kgu_uddhichuo.csv')
+    nodes.to_csv(f'{c.Path.node_csv}')
+    edges.to_csv(f'{c.Path.edge_csv}')
 
     # 道路ネットワークを可視化
     ox.plot_graph(G)
 
 if __name__ == "__main__":
     extract_nodes_edges()
+    print(c.FontColor.YELLOW + 'Program ran successfully' + c.FontColor.END)

@@ -11,15 +11,14 @@
 #   初期条件:
 #     f(s, 0) = 0
 #     f(u, 0) = ∞  (u ≠ s)
-
-#! 参考:
-#!  アントルーティング: 蟻を用いた最短経路の探索方法 (蟻の行動はいずれ最短経路に収束する)
-
+#! [参考]:
+#!  アントルーティング(ACO): 蟻を用いた最短経路の探索方法 (蟻の行動はいずれ最短経路に収束する)
+#!  ベルマンフォード法: 負のコストを持つ辺が存在する場合にも適用可能
+#!  ワーシャルフロイド法: すべての頂点間の最短経路を求める
 
 import osmnx as ox
-import extract_driveway_csv as edc
 import my_network as nt
-import extract_driveway_osm as edo
+import constant as c
 
 def get_node_osmids(u: tuple) -> int:
     """ u の座標に最も近い Node の osmid を返す
@@ -34,15 +33,16 @@ def get_node_osmids(u: tuple) -> int:
 
 def main():
     Network = nt.Dijkstra()
-    MakeNetwork = nt.MakeNetwork(Network, edc.FilePath.node, edc.FilePath.edge)
+    MakeNetwork = nt.MakeNetwork(Network, c.Path.node_csv, c.Path.edge_csv)
     MakeNetwork.add_node()
     MakeNetwork.add_edge()
-    start_osmid = get_node_osmids(edo.Spot.kgu)
-    goal_osmid = get_node_osmids(edo.Spot.uddhichuo) 
+    start_osmid = get_node_osmids(c.Spot.kgu)
+    goal_osmid = get_node_osmids(c.Spot.uddhichuo) 
     min_costs = Network.dijkstra(start_osmid)
-    print(f'{round(min_costs[goal_osmid], 3)} min')
+    print(f'車で{c.Spot.kgu_name}から{c.Spot.uddhichuo_name}まで移動するのにかかる時間: {round(min_costs[goal_osmid], 3)} min')
     shortest_path = Network.get_shortest_path(start_osmid, goal_osmid)
     Network.draw(is_directed=True, path=shortest_path)
 
 if __name__ == "__main__":
     main()
+    print(c.FontColor.YELLOW + 'Program ran successfully' + c.FontColor.END)
