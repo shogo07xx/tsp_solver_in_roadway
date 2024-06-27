@@ -1,0 +1,53 @@
+//* 擬似コード
+
+PROCESS main()                                % 頂点を全て通る巡回路を 2-opt 法で求めるメイン関数
+  INPUT V                                     % V は頂点集合で要素は頂点の識別子
+  FOR i in V
+    FOR j in V
+      dist_matrix[i][j] <- dijkstra(i, j)     % ∀(i, j)∈V^2 に対してダイクストラ法を用いて最短距離行列を求める
+    END FOR
+  END FOR
+  x <- chi(dist_matrix)                       % CHI 法を用いて初期解を設定
+  N_x <- two_opt(x)                           % 初期解の近傍を求める
+  WHILE cost(y in N_x) < cost(x)              % 解集合 N_x に改善解が見つかる限りループする
+    x <- y                                    % 改善解を現在の解に更新
+    N_x <- two_opt(x)                         % 改善解に対する近傍を求め近傍を再評価、近傍は巡回路 x の二辺を入れ替えて得られる巡回路
+  END WHILE
+END                                           % 局所最適解が求まったので終了
+
+DEFINE dijkstra(s, g)                                                 % ダイクストラ法を用いて頂点 s から頂点 g への最短距離を求める関数
+  q <- [(0, s)]                                                       % 始点を距離確定頂点として優先度付きキューを初期化
+  FOR v in V \ {s}                                                    % V はマップ上の全ての頂点を要素とする頂点集合
+    dist[s][v] <- inf                                                 % 始点から始点以外の頂点までの距離を無限大にして初期化
+  END FOR
+  WHILE q != []                                                       % すべての頂点が確定するまでループする
+    (_, u) = q.pop()                                                  % 未確定の頂点集合である q から最小コストの頂点を確定する
+    FOR v in N(u)                                                     % u の隣接頂点の集合 N(u) から頂点 v を選択
+      IF is_not_decision(v) or dist[s][v] > dist[s][u] + cost(u, v)   % v が確定した頂点でなく確定した頂点 u を経由することで最小コストを更新できる場合
+        dist[s][v] = dist[s][u] + cost(u, v)                          % 最小コストを更新
+        q.push(dist[s][v], v)                                         % 頂点 v を最短距離が確定した頂点として登録
+      END IF
+    END FOR
+  END WHILE                                                           % 全ての頂点の最短距離が確定
+RETURN dist[s][g]                                                     % 頂点 s から頂点 g までの最短距離を返す
+
+DEFINE chi(dist_matrix)                     % 距離行列から最適な巡回路を CHI 法で求める関数
+  x <- conv(V)                              % 初期解を頂点集合 V から求まる凸包の頂点を結んでできる部分巡回路とする
+  WHILE x < len(V) + 1                      % 全ての頂点を通る巡回路ができるまで繰り返す
+    evaluation <- inf                       % コストの評価変数を初期化、評価方法は追加コスト比で行い値が小さい方がより適しているとみなす
+    insert_v <- None                        % 挿入頂点の初期値を設定
+    insert_i <- None                        % 挿入する場所の初期値を設定
+    FOR k in len(V)                         % 挿入する頂点を選択
+      IF k in x                             % 既に頂点 k が巡回路に存在する場合は何もしない
+        continue          
+      FOR i in x                            % 部分巡回路から頂点 i を選択
+        j <- N(i) in x                      % 頂点 i に隣接する頂点を x から選択
+        cik <- cost(dist_matrix, i, k)      % 頂点 i から k までの距離を距離行列から求める
+        ckj <- cost(dist_matrix, k, j)      % 頂点 k から j までの距離を距離行列から求める
+        cik <- cost(dist_matrix, i, j)      % 頂点 i から j までの距離を距離行列から求める
+        IF  (cik + ckj) / cij < evalution   % 評価変数を更新できる場合
+          evaluation <- (cik + ckj) / cij   % 評価変数を更新
+          insert_v <- k                     % 挿入頂点を更新
+          insert_i <- i                     % 挿入位置を更新
+    insert(x, k, i)                         % 巡回路 x の i 番目の辺の間に頂点 k を挿入
+RETURN x                                    % 最適な巡回路を返す
