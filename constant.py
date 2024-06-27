@@ -2,10 +2,14 @@ class Transportation:
     car = '車'
 
 class Spot:
-    kgu = (34.91, 135.16)
-    kgu_name = '関西学院大学三田キャンパス'
-    uddhichuo = (34.91, 135.18)
-    uddhichuo_name = 'ウッディタウン中央駅'
+    class Coordinate:
+        kgu = (34.908257, 135.161987)
+        uddhichuo = (34.909740, 135.183655)
+        sawatani_public_hall = (34.914239, 135.168343)
+    class Name:
+        kgu = '関西学院大学三田キャンパス'
+        uddhichuo = 'ウッディタウン中央駅'
+        sawatani_public_hall = '沢谷公会堂'
 
 class MarginDist:
     get_road_network_radius = 1000

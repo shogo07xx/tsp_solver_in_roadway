@@ -20,13 +20,12 @@ class Dijkstra(Network):
                 value (dict): 最短経路の直前の頂点を格納する辞書
                     key (int): 終点の osmid
                     value (int): 最短経路において、終点の前の頂点の osmid
-
         """
         super().__init__(node_csv_file, edge_csv_file)
         self.cost: Dict[int, Dict[int, float]] = {}
         self.prev: Dict[int, Dict[int, float]] = {}
 
-    def solve_spp(self, start: int) -> list[float]:
+    def solve(self, start: int) -> list[float]:
         """ ダイクストラ法を用いて最短経路とその時のコストを求める \n
         Args:
             start (int): 最短経路問題における始点の osmid

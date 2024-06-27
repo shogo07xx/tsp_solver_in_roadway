@@ -75,11 +75,12 @@ class Network:
             cost = (edge['length']/1000)/(edge['maxspeed']/60)  # 辺 (u, v) を移動するためにかかる時間 [min]
             self.__add_edge(edge['u'], edge['v'], edge['osmid'], cost, edge['oneway'], edge['reversed'])
         
-    def draw(self, is_directed = False, path = None) -> None:
+    def draw(self, is_directed = False, path: list[int] = None, multi_paths: list[list[int]] = None) -> None:
         """ ネットワークを描画  \n
         Args:
             is_directed (bool, optional): 有向グラフならば真
             path (list[int], optional): 頂点の osmid を要素としそれらを繋いだ (強調したい) 経路
+            multiple_paths (list[list[int]], optional): 複数の経路を描画する場合の経路を要素とするリスト
         """
         normal_node_size = 10
         normal_node_color = 'skyblue'
@@ -97,13 +98,18 @@ class Network:
                     continue
                 G.add_edge(u_osmid, v_osmid, weight=edge_info['cost'])
                 # edge_labels[(u_osmid, v_osmid)] = round(edge_info['cost'],1)
-        pos = {node: (data['x'], data['y']) for node, data in self.nodes.items()}  # 座標の辞書を作成
+        pos = {node: (data['x'], data['y']) for node, data in self.nodes.items()} 
         nx.draw(G, pos, with_labels=False, node_size=normal_node_size, node_color=normal_node_color)
         # nx.draw_networkx_edge_labels(G, pos, edge_labels=edge_labels)
+        def _draw_path(_G, _pos, _path, _emphasize_node_size, _emphasize_node_color, _emphasize_edge_color):
+            start_node = _path[0]
+            end_node = _path[-1]
+            nx.draw_networkx_nodes(_G, _pos, nodelist=[start_node, end_node], node_size=_emphasize_node_size, node_color=_emphasize_node_color)
+            edges_in_path = [(_path[i], _path[i+1]) for i in range(len(_path)-1)]
+            nx.draw_networkx_edges(_G, _pos, edgelist=edges_in_path, edge_color=_emphasize_edge_color, width=2)
         if path is not None:
-            start_node = path[0]
-            end_node = path[-1]
-            nx.draw_networkx_nodes(G, pos, nodelist=[start_node, end_node], node_size=emphasize_node_size, node_color=emphasize_node_color)
-            edges_in_path = [(path[i], path[i+1]) for i in range(len(path)-1)]
-            nx.draw_networkx_edges(G, pos, edgelist=edges_in_path, edge_color=emphasize_edge_color, width=2)
+            _draw_path(G, pos, path, emphasize_node_size, emphasize_node_color, emphasize_edge_color)
+        if multi_paths is not None:
+            for p in multi_paths:
+                _draw_path(G, pos, p, emphasize_node_size, emphasize_node_color, emphasize_edge_color)
         plt.show()
