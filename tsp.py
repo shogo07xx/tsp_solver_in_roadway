@@ -162,6 +162,6 @@ class TwoOpt(Dijkstra):
                 if improved:
                     break
         self.tour_osmid = [self.V[i] for i in self.tour]
-        self.tour_paths = [self.sp_matrix[self.tour[i]][self.tour[i+1]] for i in range(self.n - 1)]
+        self.tour_paths = [self.sp_matrix[self.tour[i]][self.tour[i+1]] for i in range(self.n)]
         return {'tour_osmid': self.tour_osmid, 'cost': self.min_cost, 'multi_paths': self.tour_paths}
     

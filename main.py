@@ -59,6 +59,6 @@ def main_tsp():
 if __name__ == '__main__':
     # main_get_node_osmid()
     # main_draw_network()
-    main_spp()
-    # main_tsp()
+    # main_spp()
+    main_tsp()
     print(c.FontColor.YELLOW + 'Program ran successfully' + c.FontColor.END)
