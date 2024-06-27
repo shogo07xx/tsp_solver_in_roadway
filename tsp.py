@@ -78,7 +78,7 @@ class CHI:
     
 
 class TwoOpt(Dijkstra):
-    """ 継承元が最短経路を解くクラスである TSP を 2-opt 法で解くためのクラス """
+    """ 継承元が最短経路を解くクラスである巡回セールスマン問題を 2-opt 法で解くためのクラス """
     def __init__(self, node_csv_file: str, edge_csv_file: str, V: list[int]) -> None:
         """ ネットワーク及び TSP を解くのに必要な変数を初期化 \n
         Args:
