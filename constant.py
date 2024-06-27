@@ -1,6 +1,11 @@
 class Transportation:
     car = '車'
 
+class DelayCoefficient:
+    node = 0.02
+    traffic_light = 0.25
+    departure_and_stop = 0.1
+
 class Spot:
     class Coordinate:
         kgu = (34.908257, 135.161987)

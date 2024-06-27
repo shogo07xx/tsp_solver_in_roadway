@@ -13,7 +13,9 @@ def extract_node_datas(node_csv_file: str) -> list[dict]:
             'x': ある頂点 v の経度
     """
     df = pd.read_csv(node_csv_file)
-    data = df[['osmid', 'y', 'x']].to_dict('records')
+    df.replace('nan', np.nan, inplace=True)
+    df['highway'].fillna('', inplace=True)
+    data = df[['osmid', 'y', 'x', 'highway']].to_dict('records')
     return data
 
 def extract_edge_datas(edge_csv_file: str) -> list[dict]:

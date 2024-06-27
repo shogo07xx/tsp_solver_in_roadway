@@ -5,7 +5,7 @@ import constant as c
 
 def extract_nodes_edges():
     """ osm から 2 つの地点 u, v の中心点を中心とする半径を持つ円内の道路ネットワークを取得し csv 形式で出力  \n
-    Local_Variables:
+    Attributes:
         u (tuple): ある地点の緯度経度
         v (tuple): ある地点の緯度経度
         edges (pd.DataFrame): 
@@ -28,13 +28,13 @@ def extract_nodes_edges():
             y:            Node の緯度  #! 使用する
             x:            Node の経度  #! 使用する
             street_count: Node に接続されている道路の数
-            highway:      Node が特定の高速道路に属している場合の高速道路の種類
+            highway:      Node に接続されている道路のタイプ  #! 使用する
             geometry:     Node の位置を示すオブジェクト 
     """
 
     # (u, v) を指定
-    u = c.Spot.kgu
-    v = c.Spot.uddhichuo
+    u = c.Spot.Coordinate.kgu
+    v = c.Spot.Coordinate.uddhichuo
 
     # 始点や終点の座標に最も近い頂点を取得した道路ネットワークに含まれるようにするための余分な距離
     margin_dist = c.MarginDist.get_road_network_radius

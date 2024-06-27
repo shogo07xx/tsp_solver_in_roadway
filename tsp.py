@@ -88,21 +88,21 @@ class TwoOpt(Dijkstra):
             V (list[int]): 巡回路の頂点の osmid を格納したリスト
             dist_matrix (list[list[float]]): 頂点間の距離行列
             sp_matrix (list[list[list[int]]]): 頂点間の最短経路リスト行列
-            min_cost (float): 巡回路の最小コスト
             tour (list[int]): 要素が頂点の index である最適な巡回路、初期解は最近挿入法を用いる
+            min_cost (float): 巡回路の最小コスト
             tour_osmid (list[int]): 要素が頂点の osmid である最適な巡回路
-            tour_multi_paths (list[list[int]]): 巡回路の各エッジにおける最短経路リスト
+            tour_paths (list[list[int]]): 巡回路の各エッジにおける最短経路リストを格納したリスト
         """
         super().__init__(node_csv_file, edge_csv_file)
         self.n: int = len(V)
         self.V: list[int] = V
         self.dist_matrix: list[list[float]] = [[0] * self.n for _ in range(self.n)]
-        self.min_cost: float = float('inf')
         self.sp_matrix: list[list[list[int]]] = [[[]] * self.n for _ in range(self.n)]
         self._make_dist_matrix()
         self.tour = (_ := CHI(self.dist_matrix)).solve()
+        self.min_cost: float = self.calc_cost(self.tour)
         self.tour_osmid: list[int] = [self.V[i] for i in self.tour]
-        self.tour_multi_paths = [self.sp_matrix[self.tour[i]][self.tour[i+1]] for i in range(self.n - 1)]
+        self.tour_paths = [self.sp_matrix[self.tour[i]][self.tour[i+1]] for i in range(self.n - 1)]
 
     def _make_dist_matrix(self) -> None:
         """ 頂点間の距離行列を計算する関数 """
@@ -112,22 +112,21 @@ class TwoOpt(Dijkstra):
                 self.dist_matrix[self.V.index(v)][self.V.index(u)] = min_cost[u]
                 self.sp_matrix[self.V.index(v)][self.V.index(u)] = self.get_shortest_path(v, u)
 
-    def _two_opt_swap(self, tour: list[int], i: int, j: int) -> list[int]:
+    def _two_opt_swap(self, i: int, j: int) -> list[int]:
         """ 2-OPT のエッジ交換操作を行う関数 \n
         Args:
-            tour (list[int]): 交換前の巡回路 (ハミルトン閉路)
             i (int): 交換するエッジのインデックス
             j (int): 交換するエッジのインデックス
         Returns:
-            new_tour (list[int]): 交換後の巡回路
+            new_tour (list[int]): エッジ交換後の巡回路
         """
-        new_tour = tour[:i] + tour[i:j][::-1] + tour[j:]
+        new_tour = self.tour[:i] + self.tour[i:j][::-1] + self.tour[j:]
         return new_tour
     
-    def _calc_cost(self, tour) -> float:
+    def calc_cost(self, tour) -> float:
         """ 巡回路の総コストを計算 \n
         Args:
-            tour (list[int]): 巡回路（要素は頂点の添字）
+            tour (list[int]): 頂点の添字を要素として表現した巡回路
         Returns:
             cost (float): 巡回路の総コスト
         """
@@ -147,25 +146,22 @@ class TwoOpt(Dijkstra):
                 key (str): 'multi_paths'
                 value (list[list[int]]): 巡回路の各エッジにおける最短経路リスト
         """
-        best_tour = self.tour
-        best_cost = self._calc_cost(best_tour)
         improved = True
         while improved:
             improved = False
             for i in range(1, self.n - 1):
                 for j in range(i + 1, self.n):
-                    new_tour = self._two_opt_swap(best_tour, i, j)
-                    new_cost = self._calc_cost(new_tour)
-                    if new_cost < best_cost:
-                        best_tour = new_tour
-                        best_cost = new_cost
-                        improved = True
-                        break  # 改善が見つかったので外ループへ
+                    # 2-opt 近傍を探索
+                    new_tour = self._two_opt_swap(i, j)
+                    new_cost = self.calc_cost(new_tour)
+                    if new_cost < self.min_cost:
+                        self.tour = new_tour
+                        self.min_cost = new_cost
+                        improved = True  # 改善解の発見により近傍を再評価
+                        break 
                 if improved:
-                    break  # 改善が見つかったので外ループへ
-        self.min_cost = best_cost
-        self.tour = best_tour
+                    break
         self.tour_osmid = [self.V[i] for i in self.tour]
-        self.tour_multi_paths = [self.sp_matrix[self.tour[i]][self.tour[i+1]] for i in range(self.n - 1)]
-        return {'tour_osmid': self.tour_osmid, 'cost': self.min_cost, 'multi_paths': self.tour_multi_paths}
+        self.tour_paths = [self.sp_matrix[self.tour[i]][self.tour[i+1]] for i in range(self.n - 1)]
+        return {'tour_osmid': self.tour_osmid, 'cost': self.min_cost, 'multi_paths': self.tour_paths}
     
