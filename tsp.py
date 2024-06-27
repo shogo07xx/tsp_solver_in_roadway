@@ -1,13 +1,25 @@
 from spp import Dijkstra
 
 class CHI:
+    """ 最近挿入法で距離行列から最適な巡回路を求めるクラス """
     def __init__(self, dist_matrix):
+        """ 最近挿入法を用いるために必要な変数の初期化 \n
+        Args:
+            dist_matrix (_type_): 頂点間の距離行列
+        Attributes:
+            n (int): 頂点数
+            dist_matrix (list[list[float]]): 頂点間の距離行列
+            tour (list[int]): 最適な巡回路を表すリスト
+        """
         self.n: int = len(dist_matrix)
         self.dist_matrix: list[list[float]] = dist_matrix
         self.tour: list[int] = self.__find_initial_tour()
 
-    # 初期の巡回路を最も遠い都市ペアを用いて選択
     def __find_initial_tour(self) -> list[int]:
+        """ 最も遠い二点からなる部分巡回路を凸包と仮定して初期部分巡回路を求める \n
+        Returns:
+            initial_tour (list[int]): 初期部分巡回路
+        """
         max_dist = -1
         initial_pair = (0, 0)
         for i in range(self.n):
@@ -16,17 +28,22 @@ class CHI:
                 if tour_cost > max_dist:
                     max_dist = tour_cost
                     initial_pair = (i, j)
-        # 初期巡回路に最も遠い都市ペアを追加
         initial_tour = [initial_pair[0], initial_pair[1], initial_pair[0]]
         return initial_tour
 
     def calc_cost(self) -> float:
+        """ 巡回路の総コストを計算 """
         cost = 0
         for i in range(len(self.tour) - 1):
             cost += self.dist_matrix[self.tour[i]][self.tour[i + 1]]
         return cost
 
     def __find_best_insertion(self) -> tuple[int, int]:
+        """ 追加コスト比を評価して部分巡回路に追加する頂点の最適な挿入位置を決定
+        Returns:
+            best_city (int): 最適な挿入位置に追加する頂点
+            best_i (int): 最適な挿入位置のインデックス 
+        """
         best_ratio = float('inf')
         best_city = None
         best_i = None
@@ -49,7 +66,11 @@ class CHI:
                     best_i = i
         return best_city, best_i
 
-    def solve(self):
+    def solve(self) -> list[int]:
+        """ 最近挿入法で最適な巡回路を求める \n
+        Returns:
+            tour (list[int]): 最適な巡回路を表すリスト
+        """
         while len(self.tour) < self.n + 1:
             best_city, best_i = self.__find_best_insertion()
             self.tour.insert(best_i + 1, best_city)
@@ -63,13 +84,13 @@ class TwoOpt(Dijkstra):
         Args:
             V (list[int]): 巡回路に含む頂点の osmid を格納したリスト
         Attributes:
-            n (int): 頂点の数
+            n (int): 頂点数
             V (list[int]): 巡回路の頂点の osmid を格納したリスト
             dist_matrix (list[list[float]]): 頂点間の距離行列
+            sp_matrix (list[list[list[int]]]): 頂点間の最短経路リスト行列
             min_cost (float): 巡回路の最小コスト
-            tour (list[int]): 要素が頂点の index である最適な巡回路
+            tour (list[int]): 要素が頂点の index である最適な巡回路、初期解は最近挿入法を用いる
             tour_osmid (list[int]): 要素が頂点の osmid である最適な巡回路
-            sp_matrix (list[list[list[int]]]): 頂点間の最短経路リストを要素とする行列
             tour_multi_paths (list[list[int]]): 巡回路の各エッジにおける最短経路リスト
         """
         super().__init__(node_csv_file, edge_csv_file)
