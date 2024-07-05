@@ -27,14 +27,14 @@ def main_draw_network():
 
 def main_spp():
     """ 最短経路問題を解くメイン関数 """
-    spp = Dijkstra(c.Path.node_csv, c.Path.edge_csv)
+    spp_solver = Dijkstra(c.Path.node_csv, c.Path.edge_csv)
     start_osmid = get_node_osmid(c.Spot.Coordinate.kgu)
     goal_osmid = get_node_osmid(c.Spot.Coordinate.uddhichuo) 
-    min_costs = spp.solve(start_osmid)
-    shortest_path = spp.get_shortest_path(start_osmid, goal_osmid)
-    delay_time = len(shortest_path) * c.DelayCoefficient.node + spp.ct_traffic_signals(shortest_path) * c.DelayCoefficient.traffic_light + 2 * c.DelayCoefficient.departure_and_stop
+    min_costs = spp_solver.solve(start_osmid)
+    shortest_path = spp_solver.get_shortest_path(start_osmid, goal_osmid)
+    delay_time = len(shortest_path) * c.DelayCoefficient.node + spp_solver.ct_traffic_signals(shortest_path) * c.DelayCoefficient.traffic_light + 2 * c.DelayCoefficient.departure_and_stop
     print(f'({c.Transportation.car}) {c.Spot.Name.kgu} -> {c.Spot.Name.uddhichuo}: {round(min_costs[goal_osmid] + delay_time, 2)} min')
-    spp.draw(is_directed=True, paths=shortest_path)
+    spp_solver.draw(is_directed=True, paths=shortest_path)
 
 def main_tsp():
     """ 巡回セールスマン問題を解くメイン関数 """
@@ -50,11 +50,11 @@ def main_tsp():
         1483561439,
         4858788235
     ]
-    tsp = TwoOpt(c.Path.node_csv, c.Path.edge_csv, V)
-    print(f'({c.Transportation.car}) CHI 法による推定巡回路移動時間: {round(tsp.min_cost, 2)} min')
-    tsp.solve()
-    print(f'({c.Transportation.car}) 2-opt 法による推定巡回路移動時間: {round(tsp.min_cost, 2)} min')  
-    tsp.draw(is_directed=True, paths=tsp.tour_paths)
+    tsp_solver = TwoOpt(c.Path.node_csv, c.Path.edge_csv, V)
+    print(f'({c.Transportation.car}) CHI 法による推定巡回路移動時間: {round(tsp_solver.min_cost, 2)} min')
+    tsp_solver.solve()
+    print(f'({c.Transportation.car}) 2-opt 法による推定巡回路移動時間: {round(tsp_solver.min_cost, 2)} min')  
+    tsp_solver.draw(is_directed=True, paths=tsp_solver.tour_paths)
 
 if __name__ == '__main__':
     # main_get_node_osmid()

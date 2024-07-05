@@ -87,11 +87,12 @@ class TwoOpt(Dijkstra):
             n (int): 頂点数
             V (list[int]): 巡回路の頂点の osmid を格納したリスト
             dist_matrix (list[list[float]]): 頂点間の距離行列
-            sp_matrix (list[list[list[int]]]): 頂点間の最短経路リスト行列
-            tour (list[int]): 要素が頂点の index である最適な巡回路、初期解は最近挿入法を用いる
+            sp_matrix (list[list[list[int]]]): 頂点間の最短経路行列
+            tour (list[int]): 頂点の index を格納して表現した最適な巡回路、初期解は最近挿入法を用いる
+            !未使用 tours (list[list[int]]): 巡回路のリスト、初期解は GRASP を用いる
             min_cost (float): 巡回路の最小コスト
-            tour_osmid (list[int]): 要素が頂点の osmid である最適な巡回路
-            tour_paths (list[list[int]]): 巡回路の各エッジにおける最短経路リストを格納したリスト
+            tour_osmid (list[int]): 頂点の osmid を格納して表現した最適な巡回路
+            tour_paths (list[list[int]]): 巡回路の各エッジにおける最短経路を格納したリスト
         """
         super().__init__(node_csv_file, edge_csv_file)
         self.n: int = len(V)
@@ -143,7 +144,7 @@ class TwoOpt(Dijkstra):
                 value (list[int], float, list[list[int]]): 巡回路の各頂点の osmid のリスト
                 key (str): 'cost'
                 value (float): 巡回路のコスト
-                key (str): 'multi_paths'
+                key (str): 'paths'
                 value (list[list[int]]): 巡回路の各エッジにおける最短経路リスト
         """
         improved = True
@@ -163,5 +164,41 @@ class TwoOpt(Dijkstra):
                     break
         self.tour_osmid = [self.V[i] for i in self.tour]
         self.tour_paths = [self.sp_matrix[self.tour[i]][self.tour[i+1]] for i in range(self.n)]
-        return {'tour_osmid': self.tour_osmid, 'cost': self.min_cost, 'multi_paths': self.tour_paths}
+        return {'tour_osmid': self.tour_osmid, 'cost': self.min_cost, 'paths': self.tour_paths}
     
+
+"""
+def grasp(self, iterations: int = 100) -> dict:
+        best_tour = None
+        best_cost = float('inf')
+        
+        for _ in range(iterations):
+            self.tour = self._generate_grasp_initial_tour()
+            self.min_cost = self.calc_cost(self.tour)
+            self.solve()
+            if self.min_cost < best_cost:
+                best_cost = self.min_cost
+                best_tour = self.tour.copy()
+        
+        self.tour = best_tour
+        self.min_cost = best_cost
+        self.tour_osmid = [self.V[i] for i in self.tour]
+        self.tour_paths = [self.sp_matrix[self.tour[i]][self.tour[i+1]] for i in range(self.n)]
+        return {'tour_osmid': self.tour_osmid, 'cost': self.min_cost, 'multi_paths': self.tour_paths}
+
+    def _generate_grasp_initial_tour(self) -> list[int]:
+        remaining = set(range(self.n))
+        tour = [random.choice(list(remaining))]
+        remaining.remove(tour[0])
+        
+        while remaining:
+            last = tour[-1]
+            candidates = list(remaining)
+            random.shuffle(candidates)
+            next_city = min(candidates, key=lambda x: self.dist_matrix[last][x])
+            tour.append(next_city)
+            remaining.remove(next_city)
+        
+        tour.append(tour[0])
+        return tour
+"""
