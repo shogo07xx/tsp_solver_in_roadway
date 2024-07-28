@@ -39,19 +39,17 @@ def main_spp():
 def main_tsp():
     """ 巡回セールスマン問題を解くメイン関数 """
     V = [
-        2028119845,
-        2699081269,
-        3804698739,
-        675652775,
-        6065363505,
-        5584275744,
-        5472922597,
+        1483026599,
+        1483026595,
+        1483026576,
+        1483026548,
+        1483026532,
         1483026505,
-        1483561439,
-        4858788235
+        1483026484
     ]
     tsp_solver = TwoOpt(c.Path.node_csv, c.Path.edge_csv, V)
-    print(f'({c.Transportation.car}) CHI 法による推定巡回路移動時間: {round(tsp_solver.min_cost, 2)} min')
+    print(f'({c.Transportation.car}) 最近挿入法による推定巡回路移動時間: {round(tsp_solver.min_cost, 2)} min')
+    tsp_solver.draw(is_directed=True, paths=tsp_solver.tour_paths)
     tsp_solver.solve()
     print(f'({c.Transportation.car}) 2-opt 法による推定巡回路移動時間: {round(tsp_solver.min_cost, 2)} min')  
     tsp_solver.draw(is_directed=True, paths=tsp_solver.tour_paths)
